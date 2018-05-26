@@ -131,7 +131,8 @@ class Form extends Component {
                     number: 0,
                     total: 0,
                     change: 0,
-                    change_text: '-'
+                    change_text: '-',
+                    cash_input: 0
                 });
             });
 
