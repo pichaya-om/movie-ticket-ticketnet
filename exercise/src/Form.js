@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './Form.css';
 import axios from 'axios'
+import {Button} from 'reactstrap';
 
 class Form extends Component {
     constructor(props) {
@@ -12,7 +13,7 @@ class Form extends Component {
             price: 0,
             number: 0,
             total: 0,
-            cash_input: 0,
+            cash_input: 400,
             change: 0,
             change_text: '-'
         };
@@ -52,7 +53,7 @@ class Form extends Component {
 
     }
 
-    handleChangeNumber(event){
+    handleChangeNumber(event) {
         this.setState({
             number: event.target.value,
         }, () => {
@@ -74,28 +75,25 @@ class Form extends Component {
         let total_amount = this.state.total;
         let initial_change = cash_input - total_amount;
 
-        if(this.state.number == 0)
-        {
+        if (this.state.number == 0) {
             alert('Please enter no. of tickets');
         }
-        else
-        {
-            if(cash_input > total_amount)
-            {
+        else {
+            if (cash_input > total_amount) {
                 let change = cash_input - total_amount;
                 let change_array = [];
 
                 available_change.map(value => {
                     if (change > 0) {
-                        console.log('cur value: '+ value);
-                        while(change/value >= 1 ){
-                            let quot = change/value;
-                            for(var i = 1; i <= quot; i++){
+                        console.log('cur value: ' + value);
+                        while (change / value >= 1) {
+                            let quot = change / value;
+                            for (var i = 1; i <= quot; i++) {
                                 change_array.push(value);
                             }
                             change = change % value;
-                            console.log('quot: '+quot);
-                            console.log('change remains: '+change);
+                            console.log('quot: ' + quot);
+                            console.log('change remains: ' + change);
                         }
                     }
 
@@ -105,23 +103,23 @@ class Form extends Component {
                     cash_input: cash_input,
                     change: initial_change,
                     change_text: change_array.reduce((prev, curr) => [prev, ', ', curr]),
-                    first_page: false});
+                    first_page: false
+                });
             }
-            else if (cash_input == total_amount)
-            {
+            else if (cash_input == total_amount) {
                 this.setState({
                     cash_input: cash_input,
                     change: 0,
-                    first_page: false});
+                    first_page: false
+                });
             }
-            else
-            {
+            else {
                 alert('Cash input is not enough');
             }
         }
     }
 
-    handleBack(event){
+    handleBack(event) {
         event.preventDefault();
 
         axios.get('http://www.mocky.io/v2/5af178123000003700ba7ff2')
@@ -138,6 +136,7 @@ class Form extends Component {
             });
 
     }
+
     render() {
 
         let movieList = this.state.movie_list;
@@ -148,59 +147,165 @@ class Form extends Component {
             }
         );
 
+        let aRight = {
+            textAlign: 'right'
+        };
+
+        let selectStyle = {
+            'padding-left': '0px'
+        };
+
+        let boldFont = {
+            'font-weight': 'bold'
+        };
+
         const firstPage = (
-            <div className='MovieForm'>
-                <form onSubmit={(e) => this.handleSubmit(e)}>
-                    <label>
-                        Select your movie:
-                        <select value={this.state.movie} onChange={this.handleChangeMovie} defaultValue={this.state.movie}>
-                            {optionItems}
-                        </select>
-                    </label>
-                    <div/>
-                    <label>
-                        No. of ticket(s):
-                        <input type='number' defaultValue={this.state.number} onChange={this.handleChangeNumber}/>
-                    </label>
-                    <div/>
-                    <hr/>
-                    <label> Total amount: </label>
-                    <input readOnly='true' value={this.state.total}/>
-                    <span> baht</span>
-                    <hr/>
-                    <label>
-                        Cash Input:
-                        <input type='number' ref='cash_input' defaultValue={0}/>
-                    </label>
-                    <div/>
-                    <hr/>
-                    <input type="submit" value="Buy Tickets"/>
-                </form>
+            <div className='container'>
+                <div class="row">
+                    <div class="col-md-12">
+                        <form onSubmit={(e) => this.handleSubmit(e)}>
+
+                            <div class="col-md-6 offset-md-3">
+                                <div className='card'>
+                                    <h5 className='card-header'> Select your movie </h5>
+                                    <div className="card-body">
+                                        <div className='form-label'>
+                                            Select your movie
+                                        </div>
+                                        <div className='col-md-6' style={selectStyle}>
+                                            <select className='form-control' value={this.state.movie}
+                                                    onChange={this.handleChangeMovie}
+                                                    defaultValue={this.state.movie}>
+                                                {optionItems}
+                                            </select>
+                                        </div>
+                                        <br/>
+                                        <div className='form-label'>
+                                            No. of ticket(s)
+                                        </div>
+                                        <input type='number' min={0} defaultValue={this.state.number}
+                                               onChange={this.handleChangeNumber}/>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+
+                            <div className="col-md-6 offset-md-3">
+                                <div className='card'>
+                                    <h5 className='card-header'> Payment </h5>
+                                    <div className="card-body">
+                                        <div className='form-label'>
+                                            Total amount
+                                        </div>
+                                        <input readOnly='true' value={this.state.total}/>
+                                        <span> baht </span>
+
+                                        <br/>
+                                        <br/>
+                                        <div className='form-label'>
+                                            Cash Input
+                                        </div>
+                                        <input type='number' min={0} ref='cash_input' defaultValue={this.state.cash_input}/> baht
+
+                                        <br/>
+                                        <br/>
+                                        <input type="submit" className='btn btn-success' value='BUY TICKET'></input>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+
+                    </div>
+                </div>
             </div>
         );
 
         const seceondPage = (
-            <div className='MovieForm'>
-                <h3> Ticket Summary </h3>
-                <div> Movie {this.state.movie} </div>
-                <div> Number {this.state.number} </div>
-                <div> Price/ticket {this.state.price} </div>
-                <div> Total {this.state.total} </div>
-                <hr/>
-                <div> Cash Input {this.state.cash_input} </div>
-                <hr/>
-                <div> Change: {this.state.change} </div>
-                <div> change_text: {this.state.change_text} </div>
-                <button onClick={this.handleBack}> back </button>
+            <div className='container'>
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="col-md-6 offset-md-3">
+                            <div className='card'>
+                                <h5 className='card-header'> Ticket Summary </h5>
+                                <div className="card-body">
+                                    <div className='row'>
+                                        <div className='col-md-4 text-right' >
+                                            <h5 style={aRight}>
+                                                {this.state.movie}
+                                            </h5>
+                                        </div>
+                                        <div className='col-md-6' style={boldFont}>
+                                            X {this.state.number}
+                                        </div>
+                                    </div>
+                                    <div className='row'>
+                                        <div className='col-md-4 text-right'>
+                                            Price per ticket
+                                        </div>
+                                        <div className='col-md-6'>
+                                            {this.state.price}
+                                        </div>
+                                    </div>
+
+                                    <div className='row'>
+                                        <div className='col-md-4 text-right'>
+                                            Total
+                                        </div>
+                                        <div className='col-md-6'>
+                                            {this.state.total}
+                                        </div>
+                                    </div>
+                                    <hr/>
+
+                                    <div className='row'>
+                                        <div className='col-md-4 text-right'>
+                                            Cash Input
+                                        </div>
+                                        <div className='col-md-6'>
+                                            {this.state.cash_input}
+                                        </div>
+                                    </div>
+                                    <hr/>
+
+
+                                    <div className='row'>
+                                        <div className='col-md-4 text-right'>
+                                            Change amount
+                                        </div>
+                                        <div className='col-md-6'>
+                                            {this.state.change}
+                                        </div>
+                                    </div>
+
+                                    <div className='row'>
+                                        <div className='col-md-4 text-right'>
+                                            Change details
+                                        </div>
+                                        <div className='col-md-6'>
+                                            {this.state.change_text}
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <div className='col-md-6 offset-md-3'>
+                            <button className='btn' onClick={this.handleBack}> GO BACK </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        );
 
-        return (
-            this.state.first_page ? firstPage : seceondPage
-        );
-    }
+                );
 
-}
+                return (
+                this.state.first_page ? firstPage : seceondPage
+                );
+                }
 
-export default Form;
+                }
+
+                export default Form;
 
