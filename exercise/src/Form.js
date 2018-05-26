@@ -13,7 +13,7 @@ class Form extends Component {
             price: 0,
             number: 0,
             total: 0,
-            cash_input: 400,
+            cash_input: 0,
             change: 0,
             change_text: '-'
         };
