@@ -10,6 +10,7 @@ class Form extends Component {
             first_page: true,
             movie_list: [],
             movie: '',
+            image: '',
             price: 0,
             number: 0,
             total: 0,
@@ -30,19 +31,23 @@ class Form extends Component {
                 this.setState({
                     movie_list: response.data.data,
                     movie: response.data.data[0].name,
+                    image: response.data.data[0].image,
                     price: response.data.data[0].price
                 });
             });
     }
 
     handleChangeMovie(event) {
-        let price = parseInt(event.target.childNodes[event.target.selectedIndex].getAttribute('price'));
-
+        let obj = event.target.childNodes[event.target.selectedIndex];
+        let price = parseInt(obj.getAttribute('price'));
+        let image = obj.getAttribute('data-image');
         this.setState({
             movie: event.target.value,
+            image: image,
             price: price
         }, () => {
             console.log("this.state.movie: " + this.state.movie);
+            console.log("this.state.index: " + this.state.index);
             console.log("this.state.number: " + this.state.number);
             console.log("this.state.price: " + this.state.price);
 
@@ -125,8 +130,10 @@ class Form extends Component {
         axios.get('http://www.mocky.io/v2/5af178123000003700ba7ff2')
             .then(response => {
                 this.setState({
+                    movie_list: response.data.data,
                     first_page: true,
                     movie: response.data.data[0].name,
+                    index: 0,
                     price: response.data.data[0].price,
                     number: 0,
                     total: 0,
@@ -142,15 +149,21 @@ class Form extends Component {
 
         let movieList = this.state.movie_list;
         let optionItems = movieList.map((movie) => {
-                if (movie.now_showing) {
-                    return <option key={movie.id} price={movie.price}>{movie.name}</option>
-                }
+            if (movie.now_showing) {
+                return <option key={movie.id} price={movie.price} data-image={movie.image}>{movie.name}</option>
             }
-        );
+        });
 
-        let aRight = {
-            textAlign: 'right'
-        };
+        let nowShowing = movieList.map((movie) => {
+            if (movie.now_showing) {
+                return <div className='card' style={cardStyle}>
+                    <img className="card-img-top" alt="Card image cap" src={movie.image}/>
+                    <div className="card-body">
+                        <h5 className="card-title">{movie.name}</h5>
+                    </div>
+                </div>
+            }
+        });
 
         let selectStyle = {
             'padding-left': '0px'
@@ -160,8 +173,20 @@ class Form extends Component {
             'font-weight': 'bold'
         };
 
+        let cardStyle = {
+            width: '18rem'
+        };
+
+        let ticketStyle = {
+            width: '25rem'
+        };
+
         const firstPage = (
             <div className='container'>
+                <div className='row'>
+                    {nowShowing}
+                </div>
+                <br/>
                 <div class="row">
                     <div class="col-md-12">
                         <form onSubmit={(e) => this.handleSubmit(e)}>
@@ -206,11 +231,14 @@ class Form extends Component {
                                         <div className='form-label'>
                                             Cash Input
                                         </div>
-                                        <input type='number' min={0} ref='cash_input' defaultValue={this.state.cash_input}/> baht
+                                        <input type='number' min={0} ref='cash_input'
+                                               defaultValue={this.state.cash_input}/> baht
 
                                         <br/>
                                         <br/>
                                         <input type="submit" className='btn btn-success' value='BUY TICKET'></input>
+                                        <br/>
+
                                     </div>
                                 </div>
                             </div>
@@ -226,87 +254,81 @@ class Form extends Component {
             <div className='container'>
                 <div className="row">
                     <div className="col-md-12">
-                        <div className="col-md-6 offset-md-3">
-                            <div className='card'>
-                                <h5 className='card-header'> Ticket Summary </h5>
-                                <div className="card-body">
-                                    <div className='row'>
-                                        <div className='col-md-4 text-right' >
-                                            <h5 style={aRight}>
-                                                {this.state.movie}
-                                            </h5>
-                                        </div>
-                                        <div className='col-md-6' style={boldFont}>
-                                            X {this.state.number}
-                                        </div>
+                        <div className='card' style={ticketStyle}>
+                            <img className="card-img-top" alt="Card image cap" src={this.state.image}/>
+                            <div className="card-body">
+                                <h5 className="card-title text-center">{this.state.movie} X {this.state.number} </h5>
+                                <div className='row'>
+                                    <div className='col-md-6 text-right'>
+                                        Price per ticket
                                     </div>
-                                    <div className='row'>
-                                        <div className='col-md-4 text-right'>
-                                            Price per ticket
-                                        </div>
-                                        <div className='col-md-6'>
-                                            {this.state.price}
-                                        </div>
+                                    <div className='col-md-6'>
+                                        {this.state.price}
                                     </div>
-
-                                    <div className='row'>
-                                        <div className='col-md-4 text-right'>
-                                            Total
-                                        </div>
-                                        <div className='col-md-6'>
-                                            {this.state.total}
-                                        </div>
+                                </div>
+                                <div className='row'>
+                                    <div className='col-md-6 text-right'>
                                     </div>
-                                    <hr/>
-
-                                    <div className='row'>
-                                        <div className='col-md-4 text-right'>
-                                            Cash Input
-                                        </div>
-                                        <div className='col-md-6'>
-                                            {this.state.cash_input}
-                                        </div>
+                                    <div className='col-md-6'>
+                                        X {this.state.number}
                                     </div>
-                                    <hr/>
-
-
-                                    <div className='row'>
-                                        <div className='col-md-4 text-right'>
-                                            Change amount
-                                        </div>
-                                        <div className='col-md-6'>
-                                            {this.state.change}
-                                        </div>
+                                </div>
+                                <div className='row'>
+                                    <div className='col-md-6 text-right' style={boldFont}>
+                                        Total
                                     </div>
-
-                                    <div className='row'>
-                                        <div className='col-md-4 text-right'>
-                                            Change details
-                                        </div>
-                                        <div className='col-md-6'>
-                                            {this.state.change_text}
-                                        </div>
+                                    <div className='col-md-6' style={boldFont}>
+                                        {this.state.total}
                                     </div>
-
+                                </div>
+                                <hr/>
+                                <div className='row'>
+                                    <div className='col-md-6 text-right'>
+                                        Cash Input
+                                    </div>
+                                    <div className='col-md-6'>
+                                        {this.state.cash_input}
+                                    </div>
+                                </div>
+                                <hr/>
+                                <div className='row'>
+                                    <div className='col-md-6 text-right'>
+                                        Change amount
+                                    </div>
+                                    <div className='col-md-6'>
+                                        {this.state.change}
+                                    </div>
+                                </div>
+                                <div className='row'>
+                                    <div className='col-md-6 text-right'>
+                                        Change details
+                                    </div>
+                                    <div className='col-md-6'>
+                                        {this.state.change_text}
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
                         <br/>
-                        <div className='col-md-6 offset-md-3'>
-                            <button className='btn' onClick={this.handleBack}> GO BACK </button>
+                        <div className='text-center'>
+                            <button className='btn' onClick={this.handleBack}> GO BACK</button>
                         </div>
+                        <br/>
+                        <br/>
+
                     </div>
                 </div>
             </div>
 
-                );
+        );
 
-                return (
-                this.state.first_page ? firstPage : seceondPage
-                );
-                }
+        return (
+            this.state.first_page ? firstPage : seceondPage
+        );
+    }
 
-                }
+}
 
-                export default Form;
+export default Form;
 
