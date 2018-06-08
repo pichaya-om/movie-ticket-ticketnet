@@ -26,7 +26,7 @@ class Form extends Component {
     }
 
     componentDidMount() {
-        axios.get('http://www.mocky.io/v2/5af178123000003700ba7ff2')
+        axios.get('https://www.mocky.io/v2/5af178123000003700ba7ff2')
             .then(response => {
                 this.setState({
                     movie_list: response.data.data,
@@ -127,7 +127,7 @@ class Form extends Component {
     handleBack(event) {
         event.preventDefault();
 
-        axios.get('http://www.mocky.io/v2/5af178123000003700ba7ff2')
+        axios.get('https://www.mocky.io/v2/5af178123000003700ba7ff2')
             .then(response => {
                 this.setState({
                     movie_list: response.data.data,
