@@ -144,6 +144,7 @@ class Form extends Component {
                     movie_list: response.data.data,
                     first_page: true,
                     movie: response.data.data[0].name,
+                    image: response.data.data[0].image,
                     index: 0,
                     price: response.data.data[0].price,
                     number: 0,
