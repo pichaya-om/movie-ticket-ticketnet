@@ -58,6 +58,18 @@ class Form extends Component {
 
     }
 
+    handleCardList(movie, price, image) {
+        this.setState({
+            movie: movie,
+            image: image,
+            price: price
+        }, () => {
+            this.setState({total: this.state.price * this.state.number}, () => {
+                console.log('total: ' + this.state.total);
+            });
+        });
+    }
+
     handleChangeNumber(event) {
         this.setState({
             number: event.target.value,
@@ -168,7 +180,7 @@ class Form extends Component {
 
         let nowShowing = movieList.map((movie) => {
             if (movie.now_showing) {
-                return <div className='card' style={cardStyle}>
+                return <div className={movie.name === this.state.movie? "card card-list card-selected" : "card card-list"} onClick={this.handleCardList.bind(this, movie.name, movie.price, movie.image)}>
                     <img className="card-img-top" alt="Card image cap" src={movie.image}/>
                     <div className="card-body">
                         <h5 className="card-title">{movie.name}</h5>
@@ -183,10 +195,6 @@ class Form extends Component {
 
         let boldFont = {
             'fontWeight': 'bold'
-        };
-
-        let cardStyle = {
-            width: '18rem'
         };
 
         let ticketStyle = {

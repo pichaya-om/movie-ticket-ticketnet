@@ -26,11 +26,25 @@ input[readonly] {
   background-color: lightgrey;
 }
 
-.card {
-  margin: 0 auto; /* Added */
-  float: none; /* Added */
-  margin-bottom: 10px; /* Added */
+.card.card-list {
+  padding: 2px;
+  margin-bottom: 15px;
 }
+
+.card.card-list.card-selected {
+  border: 2px solid #ef5350 !important;
+}
+
+.card.card-list:hover {
+  border: 2px solid #ef5350 !important;
+}
+
+.card {
+  margin: 0 auto;
+  float: none;
+  margin-bottom: 10px;
+}
+
 
 .display-linebreak {
   white-space: pre-line;
