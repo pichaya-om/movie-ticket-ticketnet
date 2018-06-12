@@ -22,10 +22,18 @@ input[readonly]:hover {
   cursor: not-allowed;
 }
 
+input[readonly] {
+  background-color: lightgrey;
+}
+
 .card {
   margin: 0 auto; /* Added */
   float: none; /* Added */
   margin-bottom: 10px; /* Added */
+}
+
+.display-linebreak {
+  white-space: pre-line;
 }
 
 

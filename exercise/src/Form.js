@@ -47,9 +47,9 @@ class Form extends Component {
             price: price
         }, () => {
             console.log("this.state.movie: " + this.state.movie);
-            console.log("this.state.index: " + this.state.index);
-            console.log("this.state.number: " + this.state.number);
-            console.log("this.state.price: " + this.state.price);
+            // console.log("this.state.index: " + this.state.index);
+            // console.log("this.state.number: " + this.state.number);
+            // console.log("this.state.price: " + this.state.price);
 
             this.setState({total: this.state.price * this.state.number}, () => {
                 console.log('total: ' + this.state.total);
@@ -58,13 +58,17 @@ class Form extends Component {
 
     }
 
+    handleCardClick(event) {
+        console.log("data-movie");
+        console.log(event.target.getAttribute('class'));
+    }
     handleChangeNumber(event) {
         this.setState({
             number: event.target.value,
         }, () => {
-            console.log("this.state.movie: " + this.state.movie);
-            console.log("this.state.number: " + this.state.number);
-            console.log("this.state.price: " + this.state.price);
+            // console.log("this.state.movie: " + this.state.movie);
+            // console.log("this.state.number: " + this.state.number);
+            // console.log("this.state.price: " + this.state.price);
 
             this.setState({total: this.state.price * this.state.number}, () => {
                 console.log('total: ' + this.state.total);
@@ -76,6 +80,9 @@ class Form extends Component {
         event.preventDefault();
 
         let available_change = [1000, 500, 100, 50, 20, 10, 5, 2, 1];
+        let change_output = {1000:0, 500:0, 100:0, 50:0, 20:0, 10:0, 5:0, 2:0, 1:0};
+        let change_details = "";
+
         let cash_input = this.refs.cash_input.value;
         let total_amount = this.state.total;
         let initial_change = cash_input - total_amount;
@@ -86,28 +93,36 @@ class Form extends Component {
         else {
             if (cash_input > total_amount) {
                 let change = cash_input - total_amount;
-                let change_array = [];
+                // let change_array = [];
 
                 available_change.map(value => {
                     if (change > 0) {
-                        console.log('cur value: ' + value);
+                        // console.log('cur value: ' + value);
                         while (change / value >= 1) {
                             let quot = change / value;
                             for (var i = 1; i <= quot; i++) {
-                                change_array.push(value);
+                                // change_array.push(value);
+                                change_output[value]+=1;
                             }
                             change = change % value;
-                            console.log('quot: ' + quot);
-                            console.log('change remains: ' + change);
+                            // console.log('quot: ' + quot);
+                            // console.log('change remains: ' + change);
                         }
                     }
 
                 });
 
+                Object.keys(change_output).reverse().map(function (key) {
+                    if(change_output[key] !== 0){
+                        change_details = change_details + key + " X " + change_output[key]+ " \n ";
+                    }
+                });
+
                 this.setState({
                     cash_input: cash_input,
                     change: initial_change,
-                    change_text: change_array.reduce((prev, curr) => [prev, ', ', curr]),
+                    // change_text: change_array.reduce((prev, curr) => [prev, ', ', curr]),
+                    change_text: change_details,
                     first_page: false
                 });
             }
@@ -156,7 +171,7 @@ class Form extends Component {
 
         let nowShowing = movieList.map((movie) => {
             if (movie.now_showing) {
-                return <div className='card' style={cardStyle}>
+                return <div className='card' style={cardStyle} onClick={this.handleCardClick}>
                     <img className="card-img-top" alt="Card image cap" src={movie.image}/>
                     <div className="card-body">
                         <h5 className="card-title">{movie.name}</h5>
@@ -170,7 +185,7 @@ class Form extends Component {
         };
 
         let boldFont = {
-            'font-weight': 'bold'
+            'fontWeight': 'bold'
         };
 
         let cardStyle = {
@@ -206,6 +221,13 @@ class Form extends Component {
                                             </select>
                                         </div>
                                         <br/>
+                                        <div className='form-label'>
+                                            Price per ticket
+                                        </div>
+                                        <input readOnly='true' value={this.state.price}/>
+                                        <br/>
+                                        <br/>
+
                                         <div className='form-label'>
                                             No. of ticket(s)
                                         </div>
@@ -303,7 +325,7 @@ class Form extends Component {
                                     <div className='col-md-6 text-right'>
                                         Change details
                                     </div>
-                                    <div className='col-md-6'>
+                                    <div className='col-md-6 display-linebreak'>
                                         {this.state.change_text}
                                     </div>
                                 </div>
