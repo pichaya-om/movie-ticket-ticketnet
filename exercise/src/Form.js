@@ -58,10 +58,6 @@ class Form extends Component {
 
     }
 
-    handleCardClick(event) {
-        console.log("data-movie");
-        console.log(event.target.getAttribute('class'));
-    }
     handleChangeNumber(event) {
         this.setState({
             number: event.target.value,
@@ -171,7 +167,7 @@ class Form extends Component {
 
         let nowShowing = movieList.map((movie) => {
             if (movie.now_showing) {
-                return <div className='card' style={cardStyle} onClick={this.handleCardClick}>
+                return <div className='card' style={cardStyle}>
                     <img className="card-img-top" alt="Card image cap" src={movie.image}/>
                     <div className="card-body">
                         <h5 className="card-title">{movie.name}</h5>
