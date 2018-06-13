@@ -215,6 +215,10 @@ class Form extends Component {
             width: '25rem'
         };
 
+        let marginTop = {
+            'marginTop': '10px'
+        };
+
         const firstPage = (
             <div className='container'>
                 <div className='row'>
@@ -340,11 +344,11 @@ class Form extends Component {
                                         {this.state.change}
                                     </div>
                                 </div>
-                                <div className='row'>
+                                <div className='row' style={marginTop}>
                                     <div className='col-md-6 text-right'>
                                         Change details
                                     </div>
-                                    <div className='col-md-6 display-linebreak'>
+                                    <div className='col-md-6'>
                                         {changeAmount}
                                     </div>
                                 </div>

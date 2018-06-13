@@ -7,11 +7,15 @@ class Change extends React.Component {
 
     render() {
         return (
-            <div>
-                <button className={`change-${ this.props.change_type} change-btn btn btn-default`}>
-                    {this.props.change_type}
-                </button>
-                X {this.props.amount}
+            <div className='row'>
+                <div className='col-md-5 text-center'>
+                    <button className={`change-${ this.props.change_type} change-btn btn btn-default`}>
+                        {this.props.change_type}
+                    </button>
+                </div>
+                <div className='col-md-6'>
+                    X {this.props.amount}
+                </div>
             </div>
 
         );
