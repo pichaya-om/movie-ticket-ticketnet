@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
+import './Change.css';
 import './Form.css';
 import axios from 'axios'
-import {Button} from 'reactstrap';
+import Change from './Change';
+
 
 class Form extends Component {
     constructor(props) {
@@ -16,8 +18,9 @@ class Form extends Component {
             total: 0,
             cash_input: 0,
             change: 0,
-            change_text: '-'
-        };
+            change_hash: []
+        }
+        ;
 
         this.handleChangeMovie = this.handleChangeMovie.bind(this);
         this.handleChangeNumber = this.handleChangeNumber.bind(this);
@@ -88,8 +91,7 @@ class Form extends Component {
         event.preventDefault();
 
         let available_change = [1000, 500, 100, 50, 20, 10, 5, 2, 1];
-        let change_output = {1000:0, 500:0, 100:0, 50:0, 20:0, 10:0, 5:0, 2:0, 1:0};
-        let change_details = "";
+        let change_output = {1000: 0, 500: 0, 100: 0, 50: 0, 20: 0, 10: 0, 5: 0, 2: 0, 1: 0};
 
         let cash_input = this.refs.cash_input.value;
         let total_amount = this.state.total;
@@ -110,7 +112,7 @@ class Form extends Component {
                             let quot = change / value;
                             for (var i = 1; i <= quot; i++) {
                                 // change_array.push(value);
-                                change_output[value]+=1;
+                                change_output[value] += 1;
                             }
                             change = change % value;
                             // console.log('quot: ' + quot);
@@ -120,17 +122,17 @@ class Form extends Component {
 
                 });
 
-                Object.keys(change_output).reverse().map(function (key) {
-                    if(change_output[key] !== 0){
-                        change_details = change_details + key + " X " + change_output[key]+ " \n ";
-                    }
-                });
+                // Object.keys(change_output).reverse().map(function (key) {
+                //     if(change_output[key] !== 0){
+                //         change_details = change_details + key + " X " + change_output[key]+ " \n ";
+                //     }
+                // });
 
                 this.setState({
                     cash_input: cash_input,
                     change: initial_change,
-                    // change_text: change_array.reduce((prev, curr) => [prev, ', ', curr]),
-                    change_text: change_details,
+                    // change_hash: change_array.reduce((prev, curr) => [prev, ', ', curr]),
+                    change_hash: change_output,
                     first_page: false
                 });
             }
@@ -162,7 +164,7 @@ class Form extends Component {
                     number: 0,
                     total: 0,
                     change: 0,
-                    change_text: '-',
+                    change_hash: [],
                     cash_input: 0
                 });
             });
@@ -180,12 +182,24 @@ class Form extends Component {
 
         let nowShowing = movieList.map((movie) => {
             if (movie.now_showing) {
-                return <div className={movie.name === this.state.movie? "card card-list card-selected" : "card card-list"} onClick={this.handleCardList.bind(this, movie.name, movie.price, movie.image)}>
+                return <div
+                    className={movie.name === this.state.movie ? "card card-list card-selected" : "card card-list"}
+                    onClick={this.handleCardList.bind(this, movie.name, movie.price, movie.image)}>
                     <img className="card-img-top" alt="Card image cap" src={movie.image}/>
                     <div className="card-body">
                         <h5 className="card-title">{movie.name}</h5>
                     </div>
                 </div>
+            }
+        });
+
+        let changeList = this.state.change_hash;
+        console.log('changeList');
+        console.log(changeList);
+        let changeAmount = Object.keys(changeList).reverse().map((key) => {
+            let amount = changeList[key];
+            if (amount !== 0) {
+                return <Change change_type={key} amount={amount}/>
             }
         });
 
@@ -331,7 +345,7 @@ class Form extends Component {
                                         Change details
                                     </div>
                                     <div className='col-md-6 display-linebreak'>
-                                        {this.state.change_text}
+                                        {changeAmount}
                                     </div>
                                 </div>
                             </div>

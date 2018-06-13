@@ -1,0 +1,56 @@
+.change-btn {
+    cursor: default !important;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    padding: 2px 4px 2px 4px !important;
+}
+
+.change-1000 {
+    background-color: #989898;
+    width: 60px;
+}
+
+.change-500 {
+    background-color: #B39DDB;
+    width: 55px;
+}
+
+.change-100 {
+    background-color: #ef9a9a;
+    width: 50px;
+}
+
+.change-50 {
+    background-color: #90CAF9;
+    width: 45px;
+}
+
+.change-20 {
+    background-color: #C5E1A5 ;
+    width: 45px;
+
+}
+
+.change-10 {
+    padding: 0px 1px 0px 1px !important;
+    border-radius: 50% !important;
+    border: 4px solid #FBC02D !important;
+    font-size: 12px !important;
+    width: 35px;
+    height: 35px;
+}
+
+.change-5 {
+    width: 30px !important;
+    height: 30px !important;
+}
+
+.change-5, .change-2, .change-1 {
+    padding: 0px 1px 0px 1px !important;
+    border-radius: 50% !important;
+    font-size: 12px !important;
+    width: 25px;
+    height: 25px;
+}
+
+/*[1000, 500, 100, 50, 20, 10, 5, 2, 1];*/
