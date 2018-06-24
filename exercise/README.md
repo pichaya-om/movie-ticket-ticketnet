@@ -61,12 +61,10 @@ Allow JS bundle to be committed (removes `build` from ignores) <br>
 	`sed '/build/d' .gitignore > .gitignore.new && mv .gitignore.new .gitignore`
 
 Build, commit, & deploy <br>
-	```
-	npm run build
-	git add .
-	git commit -m "react-create-app on Heroku"
-	git push heroku master
-	```
+	`npm run build` <br>
+	`git add .` <br>
+	`git commit -m "react-create-app on Heroku"` <br>
+	`git push heroku master` <br>
 	
 Visit the live React app in your browser <br>
 	`heroku open`
