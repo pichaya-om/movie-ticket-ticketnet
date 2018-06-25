@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
 import './Change.css';
-import './Form.css';
+import './App.css';
 import axios from 'axios'
-import Change from './Change';
 
-
-class Form extends Component {
+class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -18,7 +16,8 @@ class Form extends Component {
             total: 0,
             cash_input: 0,
             change: 0,
-            change_hash: []
+            change_hash: [],
+            fireRedirect: false
         }
         ;
 
@@ -50,9 +49,6 @@ class Form extends Component {
             price: price
         }, () => {
             console.log("this.state.movie: " + this.state.movie);
-            // console.log("this.state.index: " + this.state.index);
-            // console.log("this.state.number: " + this.state.number);
-            // console.log("this.state.price: " + this.state.price);
 
             this.setState({total: this.state.price * this.state.number}, () => {
                 console.log('total: ' + this.state.total);
@@ -101,50 +97,47 @@ class Form extends Component {
             alert('Please enter no. of tickets');
         }
         else {
-            if (cash_input > total_amount) {
+            if (cash_input < total_amount) {
+                alert('Cash input is not enough');
+            }
+            else {
                 let change = cash_input - total_amount;
                 // let change_array = [];
 
                 available_change.map(value => {
                     if (change > 0) {
-                        // console.log('cur value: ' + value);
                         while (change / value >= 1) {
                             let quot = change / value;
                             for (var i = 1; i <= quot; i++) {
-                                // change_array.push(value);
                                 change_output[value] += 1;
                             }
                             change = change % value;
-                            // console.log('quot: ' + quot);
-                            // console.log('change remains: ' + change);
                         }
                     }
 
                 });
 
-                // Object.keys(change_output).reverse().map(function (key) {
-                //     if(change_output[key] !== 0){
-                //         change_details = change_details + key + " X " + change_output[key]+ " \n ";
-                //     }
-                // });
-
                 this.setState({
                     cash_input: cash_input,
                     change: initial_change,
-                    // change_hash: change_array.reduce((prev, curr) => [prev, ', ', curr]),
                     change_hash: change_output,
-                    first_page: false
+                    first_page: false,
+                    fireRedirect: true
+                }, () => {
+                    this.props.history.push({
+                        pathname: '/summary',
+                        state: {
+                            image: this.state.image,
+                            movie: this.state.movie,
+                            number: this.state.number,
+                            price: this.state.price,
+                            total: this.state.total,
+                            cash_input: this.state.cash_input,
+                            change: initial_change,
+                            change_hash: change_output
+                        }
+                    })
                 });
-            }
-            else if (cash_input == total_amount) {
-                this.setState({
-                    cash_input: cash_input,
-                    change: 0,
-                    first_page: false
-                });
-            }
-            else {
-                alert('Cash input is not enough');
             }
         }
     }
@@ -165,14 +158,14 @@ class Form extends Component {
                     total: 0,
                     change: 0,
                     change_hash: [],
-                    cash_input: 0
+                    cash_input: 0,
+                    fireRedirect: false
                 });
             });
 
     }
 
     render() {
-
         let movieList = this.state.movie_list;
         let optionItems = movieList.map((movie) => {
             if (movie.now_showing) {
@@ -193,43 +186,21 @@ class Form extends Component {
             }
         });
 
-        let changeList = this.state.change_hash;
-        console.log('changeList');
-        console.log(changeList);
-        let changeAmount = Object.keys(changeList).reverse().map((key) => {
-            let amount = changeList[key];
-            if (amount !== 0) {
-                return <Change change_type={key} amount={amount}/>
-            }
-        });
-
         let selectStyle = {
             'padding-left': '0px'
         };
 
-        let boldFont = {
-            'fontWeight': 'bold'
-        };
-
-        let ticketStyle = {
-            width: '25rem'
-        };
-
-        let marginTop = {
-            'marginTop': '10px'
-        };
-
-        const firstPage = (
+        return (
             <div className='container'>
                 <div className='row'>
                     {nowShowing}
                 </div>
                 <br/>
-                <div class="row">
-                    <div class="col-md-12">
+                <div className="row">
+                    <div className="col-md-12">
                         <form onSubmit={(e) => this.handleSubmit(e)}>
 
-                            <div class="col-md-6 offset-md-3">
+                            <div className="col-md-6 offset-md-3">
                                 <div className='card'>
                                     <h5 className='card-header'> Select your movie </h5>
                                     <div className="card-body">
@@ -289,91 +260,13 @@ class Form extends Component {
                             </div>
                         </form>
 
-
                     </div>
                 </div>
             </div>
-        );
-
-        const seceondPage = (
-            <div className='container'>
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className='card' style={ticketStyle}>
-                            <img className="card-img-top" alt="Card image cap" src={this.state.image}/>
-                            <div className="card-body">
-                                <h5 className="card-title text-center">{this.state.movie} X {this.state.number} </h5>
-                                <div className='row'>
-                                    <div className='col-md-6 text-right'>
-                                        Price per ticket
-                                    </div>
-                                    <div className='col-md-6'>
-                                        {this.state.price}
-                                    </div>
-                                </div>
-                                <div className='row'>
-                                    <div className='col-md-6 text-right'>
-                                    </div>
-                                    <div className='col-md-6'>
-                                        X {this.state.number}
-                                    </div>
-                                </div>
-                                <div className='row'>
-                                    <div className='col-md-6 text-right' style={boldFont}>
-                                        Total
-                                    </div>
-                                    <div className='col-md-6' style={boldFont}>
-                                        {this.state.total}
-                                    </div>
-                                </div>
-                                <hr/>
-                                <div className='row'>
-                                    <div className='col-md-6 text-right'>
-                                        Cash Input
-                                    </div>
-                                    <div className='col-md-6'>
-                                        {this.state.cash_input}
-                                    </div>
-                                </div>
-                                <hr/>
-                                <div className='row'>
-                                    <div className='col-md-6 text-right'>
-                                        Change amount
-                                    </div>
-                                    <div className='col-md-6'>
-                                        {this.state.change}
-                                    </div>
-                                </div>
-                                <div className='row' style={marginTop}>
-                                    <div className='col-md-6 text-right'>
-                                        Change details
-                                    </div>
-                                    <div className='col-md-6'>
-                                        {changeAmount}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <br/>
-                        <div className='text-center'>
-                            <button className='btn' onClick={this.handleBack}> GO BACK</button>
-                        </div>
-                        <br/>
-                        <br/>
-
-                    </div>
-                </div>
-            </div>
-
-        );
-
-        return (
-            this.state.first_page ? firstPage : seceondPage
         );
     }
 
 }
 
-export default Form;
+export default App;
 
