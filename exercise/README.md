@@ -44,3 +44,27 @@ If you aren’t satisfied with the build tool and configuration choices, you can
 Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+<br><br>
+## Deploying to Heroku
+
+In the project directory, run: <br>
+  `git init`
+
+Create the Heroku app; requires free account at [Heroku](https://www.heroku.com/). <br> 
+  `heroku create -b https://git.heroku.com/movie-ticket-thinknet.git`
+  
+Set the web root to the build/ directory <br>
+	`echo '{ "root": "build/" }' > static.json`
+
+Allow JS bundle to be committed (removes `build` from ignores) <br>
+	`sed '/build/d' .gitignore > .gitignore.new && mv .gitignore.new .gitignore`
+
+Build, commit, & deploy <br>
+	`npm run build` <br>
+	`git add .` <br>
+	`git commit -m "react-create-app on Heroku"` <br>
+	`git push heroku master` <br>
+	
+Visit the live React app in your browser <br>
+	`heroku open`
